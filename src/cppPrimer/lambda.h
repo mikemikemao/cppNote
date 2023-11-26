@@ -87,3 +87,13 @@ void fcn5()
     j = f();       // returns incremented value of *p
     cout << v1 << " " << j << endl; // prints 1 1
 }
+
+void fcn6()
+{
+	size_t v1 = 42;
+	auto f = [v1]() mutable
+	{ return ++v1; }; //mutabel能够改变捕获局部变量的值
+	v1 = 0;
+	auto j = f();
+	cout << j << endl;
+}

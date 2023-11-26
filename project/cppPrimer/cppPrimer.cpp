@@ -13,6 +13,7 @@ namespace lambdaTest
 		fcn3();
 		fcn4();
 		fcn5();
+		fcn6();
 	}
 }
 
