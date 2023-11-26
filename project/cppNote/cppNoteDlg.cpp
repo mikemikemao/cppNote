@@ -6,6 +6,9 @@
 #include "cppNote.h"
 #include "cppNoteDlg.h"
 #include "afxdialogex.h"
+#include <string>
+#include "graph/ListGraph.h"
+using namespace std;
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -64,6 +67,7 @@ BEGIN_MESSAGE_MAP(CcppNoteDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
+	ON_BN_CLICKED(IDC_BTN_GRAPH_TEST, &CcppNoteDlg::OnBnClickedBtnGraphTest)
 END_MESSAGE_MAP()
 
 
@@ -152,3 +156,26 @@ HCURSOR CcppNoteDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
+
+
+void CcppNoteDlg::OnBnClickedBtnGraphTest()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	ListGraph<string, int> graph;
+	graph.addEdge("V0", "V1");
+	graph.addEdge("V1", "V0");
+
+	graph.addEdge("V0", "V2");
+	graph.addEdge("V2", "V0");
+
+	graph.addEdge("V0", "V3");
+	graph.addEdge("V3", "V0");
+
+	graph.addEdge("V1", "V2");
+	graph.addEdge("V2", "V1");
+
+	graph.addEdge("V2", "V3");
+	graph.addEdge("V3", "V2");
+
+	graph.print();
+}
