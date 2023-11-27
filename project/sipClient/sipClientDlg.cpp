@@ -11,6 +11,8 @@
 #define new DEBUG_NEW
 #endif
 
+static constexpr int SIP_CLIENT_PORT = 5065;
+static constexpr int SIP_SERVER_PORT = 5060;
 
 // 用于应用程序“关于”菜单项的 CAboutDlg 对话框
 
@@ -59,6 +61,7 @@ void CsipClientDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_EDIT_SHOW_MSG, m_edit_show_msg);
+	DDX_Control(pDX, IDC_IPADDRESS1, m_svr_ip);
 }
 
 BEGIN_MESSAGE_MAP(CsipClientDlg, CDialogEx)
@@ -104,7 +107,7 @@ BOOL CsipClientDlg::OnInitDialog()
 
 	// TODO: 在此添加额外的初始化代码
 	_keepRunning = false;
-
+	m_svr_ip.SetWindowTextA("10.6.120.2");
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -171,35 +174,41 @@ void CsipClientDlg::OnBnClickedBtnRegister()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	int ret = 0;
-	int local_port = 5062;
-	char local_ip[32] = { 0 };
+	in_addr addr;
+	memset(&addr, 0x00, sizeof(in_addr));
+	DWORD ipAddr = 0;
+	char* svrIpStr = NULL;
+	char local_ip[128] = { 0 };
 	char from_uri[128] = {0};
 	char proxy_uri[128] = { 0 };
-	char contact[128] = { 0 };
 	char* deviceId = "piratemike";
-	char* server_sip_id = "piratemikeproxy";
+	CString strTmp;
+	m_svr_ip.GetAddress(ipAddr);
+	addr.s_addr = htonl(ipAddr);
+	svrIpStr = inet_ntoa(addr);
+
 	ret = eXosip_guess_localip(sip_context, AF_INET, local_ip, 128);
 	if (ret != OSIP_SUCCESS) {
 		m_edit_show_msg.SetWindowTextA("eXosip_guess_localip failed");
 		return;
 	}
-
+	strTmp.Format("local_ip : %s", local_ip);
+	showMsg(strTmp.GetBuffer());
+	strTmp.Format("svr_ip   : %s", svrIpStr);
+	showMsg(strTmp.GetBuffer());
 	//不能用<>包裹，不然eXosip_register_build_initial_register 会一直返回 -5，语法错误
-	sprintf_s(from_uri, "sip:%s@%s:%d", deviceId, local_ip, local_port);
-	sprintf_s(contact, "sip:%s@%s:%d", deviceId, local_ip, local_port);
-	//sprintf(contact,"<sip:%s@%s:%d>",deviceId,server_ip,server_port);
-	sprintf_s(proxy_uri, "sip:%s@%s:5060", server_sip_id, local_ip);
-
+	sprintf_s(from_uri, "sip:%s@%s:%d", deviceId, local_ip, SIP_CLIENT_PORT);
+	sprintf_s(proxy_uri, "sip:%s:%d", svrIpStr, SIP_SERVER_PORT);
 	eXosip_clear_authentication_info(sip_context);
-
-
 	osip_message_t * register_message = NULL;
 	//struct eXosip_t *excontext, const char *from, const char *proxy, const char *contact, int expires, osip_message_t ** reg
-	int register_id = eXosip_register_build_initial_register(sip_context, from_uri, proxy_uri, contact, 3600, &register_message);
+	int register_id = eXosip_register_build_initial_register(sip_context, from_uri, proxy_uri, NULL, 3600, &register_message);
 	if (register_message == NULL) {
 		AfxMessageBox("eXosip_register_build_initial_register failed");
 		return;
 	}
+	strTmp.Format("register_id   : %d", register_id);
+	showMsg(strTmp.GetBuffer());
 	//提前输入了验证信息，在消息为401处，用eXosip_automatic_action()自动处理
 	//eXosip_add_authentication_info(sip_context,"022000000110000", "022000000110000", "12345678", "MD5", NULL);
 	eXosip_lock(sip_context);
@@ -224,24 +233,19 @@ void CsipClientDlg::OnBnClickedBtnInit()
 		m_edit_show_msg.SetWindowTextA("sip init failed");
 		return;
 	}
-	ret = eXosip_guess_localip(sip_context, AF_INET, local_ip, 32);
+
+	ret = eXosip_guess_localip(sip_context, AF_INET, local_ip, 128);
 	if (ret != OSIP_SUCCESS) {
 		m_edit_show_msg.SetWindowTextA("eXosip_guess_localip failed");
 		return;
 	}
-	local_port = eXosip_find_free_port(sip_context, 5060, IPPROTO_UDP);
-	if (local_port <= 0) {
-		m_edit_show_msg.SetWindowTextA("eXosip_find_free_port failed");
-		return;
-	}
-	strTmp.Format("ip: %s  port: %d", local_ip, local_port);
-	showMsg(strTmp.GetBuffer());
-	ret = eXosip_listen_addr(sip_context, IPPROTO_UDP, local_ip, local_port+2, AF_INET, 0);
+
+	ret = eXosip_listen_addr(sip_context, IPPROTO_UDP, local_ip, SIP_CLIENT_PORT, AF_INET, 0);
 	if (ret != OSIP_SUCCESS) {
 		m_edit_show_msg.SetWindowTextA("eXosip_listen_addr failed");
 		return;
 	}
-
+	showMsg("init success");
 	_keepRunning = true;
 	_receiverThread = std::thread([=]()//隐式捕获 以值捕获方式
 	{

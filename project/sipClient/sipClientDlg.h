@@ -49,4 +49,5 @@ private:
 	
 public:
 	afx_msg void OnBnClickedBtnDeInit();
+	CIPAddressCtrl m_svr_ip;
 };

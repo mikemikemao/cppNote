@@ -13,7 +13,7 @@ SipMessage::SipMessage(std::string message, sockaddr_in src) : _messageStr(std::
 void SipMessage::parse()
 {
 	std::string msg = _messageStr;
-
+	std::cout << _messageStr << std::endl;
 	size_t pos = msg.find(SipMessageHeaders::HEADERS_DELIMETER);
 	_header = msg.substr(0, pos);
 	msg.erase(0, pos + std::strlen(SipMessageHeaders::HEADERS_DELIMETER));
