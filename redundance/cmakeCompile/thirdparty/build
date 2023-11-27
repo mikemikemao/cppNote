@@ -1,0 +1,115 @@
+#!/bin/bash
+
+CURRENT_PATH=$(cd `dirname $0`; pwd)
+if [ -z "$VIS_PREFIX" ]; then
+	VIS_PREFIX="$CURRENT_PATH/"
+fi
+export VIS_PREFIX
+
+BUILD_MODE="release"
+
+function set_build_mode() {
+	export BUILD_MODE=$BUILD_MODE
+}
+
+function _build_base() {
+    P=_build-$2
+    if [ -d $P ]; then
+        rm -rf $P
+    fi
+    mkdir  $P
+    cd     $P
+    if [ "$1" = "default" ]; then
+        export CROSS_TOOLCHAIN=""
+    else
+        export CROSS_TOOLCHAIN=$1
+    fi
+	
+	if [ "$ARCH" = "R2" ]; then
+		cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_HOME/build/cmake/android.toolchain.cmake \
+		  -DANDROID_NDK=$ANDROID_NDK_HOME \
+		  -DANDROID_ABI=arm64-v8a \
+		  -DANDROID_TOOLCHAIN=clang \
+		  -DANDROID_PLATFORM=android-26 \
+		  -DANDROID_STL=c++_static  \
+		  ..
+	elif [ "$ARCH" = "A2" ];then	
+		cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_HOME/build/cmake/android.toolchain.cmake \
+		  -DANDROID_NDK=$ANDROID_NDK_HOME \
+		  -DANDROID_ABI=armeabi-v7a \
+		  -DANDROID_TOOLCHAIN=clang \
+		  -DANDROID_PLATFORM=android-26 \
+		  -DANDROID_STL=c++_static  \
+		  ..
+	else	
+		cmake $CURRENT_PATH	
+	fi	
+	
+    make  || exit 1
+    make install || exit 1
+    cd $CURRENT_PATH
+}
+
+# build <H5|R0|M0|R2|A2> <linux|android>
+function build() {
+    ARCH=$1
+    shift 1
+    for OS in $@ ; do
+        echo "*****************************************"
+        echo "     Build  $ARCH $OS    "
+        echo "*****************************************"
+
+        case $OS in
+            linux)
+				if [ "$ARCH" = "H5" ];then
+                    CROSS_TOOLCHAIN="arm-hisiv100nptl-linux-"
+                elif [ "$ARCH" = "R0" ];then
+                    CROSS_TOOLCHAIN="arm-linux-"
+                elif [ "$ARCH" = "M0" ];then
+                    CROSS_TOOLCHAIN="/opt/mips/buildroot-mips-gcc492-uclibc/usr/bin/mipsel-linux-"
+				else
+					CROSS_TOOLCHAIN="default"
+                fi
+                ;;
+				
+			android)
+				if [[ "$ARCH" = "R2" || "$ARCH" = "A2" ]];then												
+                    CROSS_TOOLCHAIN="default"
+					ANDROID_NDK_HOME="/opt/Android/android-ndk-r16b"
+					export ANDROID_NDK_HOME
+				fi
+				;;
+			
+            *)
+                echo "error OS $1"
+                exit 1;
+        esac
+        ARCH_OS=$ARCH-$OS
+        export ARCH_OS 
+		
+		VENUS_PLATFORM=$ARCH
+		export VENUS_PLATFORM
+		 			
+        dos2unix `find . -regex '.*\.[c,h].*'` 1>/dev/null 2>/dev/null
+        _build_base $CROSS_TOOLCHAIN $ARCH-$OS
+    done
+}
+
+if [[ "$1" = "debug" || "$1" = "release" ]]; then
+    BUILD_MODE=$1
+    shift 1
+fi
+
+set_build_mode
+if [ $# -le 1 ]; then
+    if [ "$1" = "clean" ]; then
+        rm -rf $CURRENT_PATH/_build-*
+    else
+        echo "./build [debug|release] [clean] <H5|R0|M0|R2|A2> <linux|android>"
+        echo "    eg: ./build R0 linux"
+        echo "./build clean"
+    fi
+    exit 1
+fi
+
+build $@
