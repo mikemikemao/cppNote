@@ -41,6 +41,7 @@ public:
 	sockaddr_in getSource() const;
 
 	std::string toString() const;
+	std::string toStringEx() const;
 
 protected:
 	virtual void parse();

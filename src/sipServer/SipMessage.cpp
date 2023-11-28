@@ -13,17 +13,17 @@ SipMessage::SipMessage(std::string message, sockaddr_in src) : _messageStr(std::
 void SipMessage::parse()
 {
 	std::string msg = _messageStr;
-	std::cout << _messageStr << std::endl;
+	//获取头部 Request-URI
 	size_t pos = msg.find(SipMessageHeaders::HEADERS_DELIMETER);
 	_header = msg.substr(0, pos);
 	msg.erase(0, pos + std::strlen(SipMessageHeaders::HEADERS_DELIMETER));
-
+	//有个空格 找到sip2.0
 	_type = _header.substr(0, _header.find(" "));
 	if (_type == "SIP/2.0")
 	{
 		_type = _header;
 	}
-
+	//一行一行解析
 	while ((pos = msg.find(SipMessageHeaders::HEADERS_DELIMETER)) != std::string::npos) {
 		std::string line = msg.substr(0, pos);
 
@@ -149,6 +149,25 @@ std::string SipMessage::toString() const
 {
 	return _messageStr;
 }
+
+std::string SipMessage::toStringEx() const
+{
+	std::string strTmp;
+	strTmp = "_type:" + _type + "\r\n"
+		+ "_header:" + _header + "\r\n"
+		+ "_via:" + _via + "\r\n"
+		+ "_from:" + _from + "\r\n"
+		+ "_fromNumber:" + _fromNumber + "\r\n"
+		+ "_to:" + _to + "\r\n"
+		+ "_toNumber:" + _toNumber + "\r\n"
+		+ "_callID:" + _callID + "\r\n"
+		+ "_contact:" + _contact + "\r\n"
+		+ "_contactNumber:" + _contactNumber + "\r\n"
+		+ "_contentLength:" + _contentLength + "\r\n"
+		+ "_messageStr:" + _messageStr + "\r\n";
+	return strTmp;
+}
+
 
 std::string SipMessage::getType() const
 {
