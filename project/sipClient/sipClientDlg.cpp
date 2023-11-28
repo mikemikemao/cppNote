@@ -182,6 +182,7 @@ void CsipClientDlg::OnBnClickedBtnRegister()
 	char from_uri[128] = {0};
 	char proxy_uri[128] = { 0 };
 	char* deviceId = "piratemike";
+	char ifName[8] = "eth0";
 	CString strTmp;
 	m_svr_ip.GetAddress(ipAddr);
 	addr.s_addr = htonl(ipAddr);
@@ -209,6 +210,18 @@ void CsipClientDlg::OnBnClickedBtnRegister()
 	}
 	strTmp.Format("register_id   : %d", register_id);
 	showMsg(strTmp.GetBuffer());
+
+	//增加content内容
+	ret = osip_message_set_body(register_message, ifName, strlen(ifName));
+	if (ret != OSIP_SUCCESS) {
+		m_edit_show_msg.SetWindowTextA("osip_message_set_body failed");
+		return;
+	}
+	ret = osip_message_set_content_type(register_message, "text/plain");
+	if (ret != OSIP_SUCCESS) {
+		m_edit_show_msg.SetWindowTextA("osip_message_set_content_type failed");
+		return;
+	}
 	//提前输入了验证信息，在消息为401处，用eXosip_automatic_action()自动处理
 	//eXosip_add_authentication_info(sip_context,"022000000110000", "022000000110000", "12345678", "MD5", NULL);
 	eXosip_lock(sip_context);
