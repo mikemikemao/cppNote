@@ -13,8 +13,33 @@
 
 static constexpr int SIP_CLIENT_PORT = 5065;
 static constexpr int SIP_SERVER_PORT = 5060;
-static constexpr char* FROM_NUMBER = "98765432109";
-static constexpr char* TO_NUMBER = "12345678901";
+static constexpr char* FROM_NUMBER = "piratemike";
+static constexpr char* TO_NUMBER = "piratemike";
+
+#define SIP_VERSION					"V2.0.0"
+#define VIS_SDP_2_INFO	("v=0\r\n"\
+						"o=%s 0 0 IN IP4 %s\r\n"\
+						"s=Talk session\r\n"\
+						"c=IN IP4 %s\r\n"\
+						"t=0 0\r\n"\
+						"a=doorFloor:%d\r\n"\
+						"a=responseType:%d\r\n"\
+						"a=doorType:%d\r\n"\
+						"a=isSpecialType:%d\r\n"\
+						"a=isConfirm:%d\r\n"\
+						"a=version:%s\r\n"\
+						"a=callforwardseq:%d\r\n"\
+						"a=meetingMaxForwards:%d\r\n"\
+						"m=audio %d RTP/AVP %d %d 101\r\n"\
+						"a=rtpmap:0 PCMU/8000\r\n"\
+						"a=rtpmap:8 PCMA/8000\r\n"\
+						"a=rtpmap:101 telephone-event/8000\r\n"\
+						"a=fmtp:101 0-16\r\n"\
+						"a=sendrecv\r\n"\
+						"m=video %d RTP/AVP 96\r\n"\
+						"a=rtpmap:96 H264/90000\r\n"\
+						"a=fmtp:96 profile-level-id=42801F;packetization-mode=1\r\n"\
+						"a=sendrecv\r\n")
 
 // 用于应用程序“关于”菜单项的 CAboutDlg 对话框
 
@@ -329,12 +354,21 @@ void CsipClientDlg::OnBnClickedBtnInvite()
 	char local_ip[32] = { 0 };
 	char from[128] = { 0 };
 	char to[128] = { 0 };
+	char route[128] = { 0 };
+	char acTmpBuf[1024] = { 0 };
 	std::string strMsg = "hello sip";
 
 	m_svr_ip.GetAddress(ipAddr);
 	addr.s_addr = htonl(ipAddr);
 	svrIpStr = inet_ntoa(addr);
 
+	//rtp
+	int audio_type1 = 8;
+	int audio_type2 = 0;
+	int rtp_audio_port = 9654;
+	int rtp_video_port = 9654;
+
+	int isSpecialType = 2;
 
 	ret = eXosip_guess_localip(sip_context, AF_INET, local_ip, 128);
 	if (ret != OSIP_SUCCESS) {
@@ -343,19 +377,26 @@ void CsipClientDlg::OnBnClickedBtnInvite()
 	}
 	sprintf_s(from, "sip:%s@%s:%d", FROM_NUMBER, local_ip, SIP_CLIENT_PORT);
 	sprintf_s(to,"sip:%s@%s:%d", TO_NUMBER, svrIpStr, SIP_SERVER_PORT);
+	sprintf_s(route, "sip:%s@%s:%d", TO_NUMBER, svrIpStr, SIP_SERVER_PORT);
 
 	eXosip_lock(sip_context);
 	do
 	{
 		osip_message_t* invite_msg = NULL;
-		ret = eXosip_call_build_initial_invite(sip_context, &invite_msg, to, from, NULL, NULL);
+		ret = eXosip_call_build_initial_invite(sip_context, &invite_msg, to, from, route, "This is a call to extension.");
 		if(ret != OSIP_SUCCESS)
 		{
 			showMsg("eXosip_call_build_initial_invite fail");
 			break;
 		}
-		osip_message_set_content_type(invite_msg, "Application/SDP");
-		osip_message_set_body(invite_msg, strMsg.c_str(), strMsg.length());
+		/* SDP信息设置 */
+		sprintf_s(acTmpBuf, VIS_SDP_2_INFO, "piratemike", local_ip, local_ip, 0,
+			0, 1, isSpecialType, 0,
+			SIP_VERSION, 0, 0, rtp_audio_port, audio_type1, audio_type2, rtp_video_port);
+
+		osip_message_set_body(invite_msg, acTmpBuf, strlen(acTmpBuf));
+		osip_message_set_content_type(invite_msg, "application/sdp");
+
 		ret = eXosip_call_send_initial_invite(sip_context, invite_msg);
 		if(ret < 0 )
 		{

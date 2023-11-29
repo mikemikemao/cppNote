@@ -48,7 +48,6 @@ std::optional<std::shared_ptr<Session>> RequestsHandler::getSession(const std::s
 void RequestsHandler::OnRegister(std::shared_ptr<SipMessage> data)
 {
 	bool isUnregisterReq = data->getContact().find("expires=0") != -1;
-
 	if (!isUnregisterReq)
 	{
 		auto newClient = std::make_shared<SipClient>(data->getFromNumber(), data->getSource());
@@ -83,6 +82,7 @@ void RequestsHandler::onReqTerminated(std::shared_ptr<SipMessage> data)
 void RequestsHandler::OnInvite(std::shared_ptr<SipMessage> data)
 {
 	// Check if the caller is registered
+	std::cout << "OnInvite" << std::endl;
 	auto caller = findClient(data->getFromNumber());
 	if (!caller.has_value())
 	{
@@ -112,6 +112,7 @@ void RequestsHandler::OnInvite(std::shared_ptr<SipMessage> data)
 
 	auto response = data;
 	response->setContact("Contact: <sip:" + caller.value()->getNumber() + "@" + _serverIp + ":" + std::to_string(_serverPort) + ";transport=UDP>");
+	std::cout << response->toString() << std::endl;
 	endHandle(data->getToNumber(), response);
 }
 

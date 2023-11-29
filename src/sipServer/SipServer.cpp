@@ -13,7 +13,7 @@ void SipServer::onNewMessage(std::string data, sockaddr_in src)
 	auto message = _messagesFactory.createMessage(std::move(data), std::move(src));
 	if (message.has_value())
 	{
-		std::cout << message.value()->toStringEx() << std::endl;
+		std::cout << message.value()->toString() << std::endl;
 		_handler.handle(std::move(message.value()));
 	}
 }
