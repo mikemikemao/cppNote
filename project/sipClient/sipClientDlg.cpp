@@ -13,6 +13,8 @@
 
 static constexpr int SIP_CLIENT_PORT = 5065;
 static constexpr int SIP_SERVER_PORT = 5060;
+static constexpr char* FROM_NUMBER = "98765432109";
+static constexpr char* TO_NUMBER = "12345678901";
 
 // 用于应用程序“关于”菜单项的 CAboutDlg 对话框
 
@@ -71,6 +73,7 @@ BEGIN_MESSAGE_MAP(CsipClientDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BTN_REGISTER, &CsipClientDlg::OnBnClickedBtnRegister)
 	ON_BN_CLICKED(IDC_BTN_INIT, &CsipClientDlg::OnBnClickedBtnInit)
 	ON_BN_CLICKED(IDC_BTN_DE_INIT, &CsipClientDlg::OnBnClickedBtnDeInit)
+	ON_BN_CLICKED(IDC_BTN_INVITE, &CsipClientDlg::OnBnClickedBtnInvite)
 END_MESSAGE_MAP()
 
 
@@ -277,6 +280,16 @@ void CsipClientDlg::OnBnClickedBtnInit()
 				case EXOSIP_REGISTRATION_SUCCESS: // 注册成功
 					this->showMsg("EXOSIP_REGISTRATION_SUCCESS");
 					break;
+				case EXOSIP_REGISTRATION_FAILURE:
+					this->showMsg("EXOSIP_REGISTRATION_FAILURE");
+					break;
+				case EXOSIP_CALL_INVITE:
+					this->showMsg("EXOSIP_CALL_INVITE");
+					break;
+				case EXOSIP_CALL_REDIRECTED:
+					this->showMsg("EXOSIP_CALL_INVITE");
+					break;
+
 				default:
 					break;
 			}
@@ -303,4 +316,55 @@ void CsipClientDlg::OnBnClickedBtnDeInit()
 
 CsipClientDlg::~CsipClientDlg() {
 	closeListen();
+}
+
+void CsipClientDlg::OnBnClickedBtnInvite()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	int ret = 0;
+	DWORD ipAddr = 0;
+	in_addr addr;
+	memset(&addr, 0x00, sizeof(in_addr));
+	char* svrIpStr = NULL;
+	char local_ip[32] = { 0 };
+	char from[128] = { 0 };
+	char to[128] = { 0 };
+	std::string strMsg = "hello sip";
+
+	m_svr_ip.GetAddress(ipAddr);
+	addr.s_addr = htonl(ipAddr);
+	svrIpStr = inet_ntoa(addr);
+
+
+	ret = eXosip_guess_localip(sip_context, AF_INET, local_ip, 128);
+	if (ret != OSIP_SUCCESS) {
+		m_edit_show_msg.SetWindowTextA("eXosip_guess_localip failed");
+		return;
+	}
+	sprintf_s(from, "sip:%s@%s:%d", FROM_NUMBER, local_ip, SIP_CLIENT_PORT);
+	sprintf_s(to,"sip:%s@%s:%d", TO_NUMBER, svrIpStr, SIP_SERVER_PORT);
+
+	eXosip_lock(sip_context);
+	do
+	{
+		osip_message_t* invite_msg = NULL;
+		ret = eXosip_call_build_initial_invite(sip_context, &invite_msg, to, from, NULL, NULL);
+		if(ret != OSIP_SUCCESS)
+		{
+			showMsg("eXosip_call_build_initial_invite fail");
+			break;
+		}
+		osip_message_set_content_type(invite_msg, "Application/SDP");
+		osip_message_set_body(invite_msg, strMsg.c_str(), strMsg.length());
+		ret = eXosip_call_send_initial_invite(sip_context, invite_msg);
+		if(ret < 0 )
+		{
+			CString strTmp;
+			strTmp.Format("eXosip_call_send_initial_invite failed ret =%d", ret);
+			showMsg(strTmp.GetBuffer());
+			break;
+		}
+	} while (0);
+
+	eXosip_unlock(sip_context);
 }
