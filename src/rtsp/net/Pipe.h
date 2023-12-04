@@ -1,3 +1,10 @@
+/*****************************************************************//**
+ * \file   Pipe.h
+ * \brief  建立tcpsocket 一个为服务端 一个为客户端
+ * 
+ * \author 
+ * \date   December 2023
+ *********************************************************************/
 // PHZ
 // 2018-5-15
 
@@ -5,10 +12,9 @@
 #define XOP_PIPE_H
 
 #include "TcpSocket.h"
-
 namespace xop
 {
-	
+
 class Pipe
 {
 public:

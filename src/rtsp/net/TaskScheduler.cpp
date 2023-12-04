@@ -69,6 +69,12 @@ void TaskScheduler::RemoveTimer(TimerId timerId)
 	timer_queue_.RemoveTimer(timerId);
 }
 
+/**
+ * .将callback塞到vector中 通过socket发送消息 告知事件
+ * 
+ * \param callback 
+ * \return 
+ */
 bool TaskScheduler::AddTriggerEvent(TriggerEvent callback)
 {
 	if (trigger_events_->Size() < kMaxTriggetEvents) {
@@ -81,13 +87,19 @@ bool TaskScheduler::AddTriggerEvent(TriggerEvent callback)
 
 	return false;
 }
-
+/**
+ * 不会造成资源消耗？？？
+ * 
+ */
 void TaskScheduler::Wake()
 {
 	char event[10] = { 0 };
 	while (wakeup_pipe_->Read(event, 10) > 0);
 }
-
+/**
+ * 执行callback函数
+ * 
+ */
 void TaskScheduler::HandleTriggerEvent()
 {
 	do 

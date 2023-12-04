@@ -64,11 +64,11 @@ void EventLoop::Loop()
 		std::shared_ptr<TaskScheduler> task_scheduler_ptr(new SelectTaskScheduler(n));
 #endif
 		task_schedulers_.push_back(task_scheduler_ptr);
-		std::shared_ptr<std::thread> thread(new std::thread(&TaskScheduler::Start, task_scheduler_ptr.get()));
+		std::shared_ptr<std::thread> thread(new std::thread(&TaskScheduler::Start, task_scheduler_ptr.get()));// task_scheduler_ptr.get()获取SelectTaskScheduler对象
 		thread->native_handle();
-		threads_.push_back(thread);
+		threads_.push_back(thread);//threads_是一个vector
 	}
-
+	//设置优先级
 	const int priority = TASK_SCHEDULER_PRIORITY_REALTIME;
 
 	for (auto iter : threads_) 
@@ -114,6 +114,8 @@ void EventLoop::Quit()
 	threads_.clear();
 }
 	
+//ChannelPtr主要设置回调处理函数以及读写状态更改
+//可能存在问题 目前都只设置在task_schedulers_[0]
 void EventLoop::UpdateChannel(ChannelPtr channel)
 {
 	std::lock_guard<std::mutex> locker(mutex_);

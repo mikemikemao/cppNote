@@ -64,6 +64,7 @@ bool Pipe::Create()
 	return true;
 }
 
+
 int Pipe::Write(void *buf, int len)
 {
 #if defined(WIN32) || defined(_WIN32) 
