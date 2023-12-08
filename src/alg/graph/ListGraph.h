@@ -129,26 +129,16 @@ public:
     void addVertex(V v);
     void addEdge(V from, V to);
     void addEdge(V from, V to, E weight);
-
-public:
-    void print()
-    {
-        cout << "[顶点]-------------------" << endl;
-        for (auto Vertex : m_vertices)
-        {
-            cout << Vertex.first << endl;
-            cout << "out-----------" << endl;
-            // cout << Vertex.second.outEdges << endl;
-            cout << "in-----------" << endl;
-            // cout << Vertex.second.inEdges << endl;
-        }
-    }
+    void print();
 };
 
 template <typename V, typename E>
 void ListGraph<V, E>::addVertex(V v)
 {
-    cout << "addVertex" << endl;
+    if (m_vertices.find(v) == m_vertices.end()) {
+        pair<V, Vertex<V, E>> p(v, Vertex<V, E>(v));
+        m_vertices.insert(p);
+    }
 }
 
 template <typename V, typename E>
@@ -180,6 +170,20 @@ void ListGraph<V, E>::addEdge(V from, V to, E weight)
     fromVertex.outEdges.insert(edge);
     toVertex.inEdges.insert(edge);
     m_edges.insert(edge);
+}
+
+template <typename V, typename E>
+void ListGraph<V, E>::print()
+{
+    cout << "[顶点]-------------------" << endl;
+    for (auto Vertex : m_vertices)
+    {
+        cout << Vertex.first << endl;
+        cout << "out-----------" << endl;
+        //cout << Vertex.second.outEdges << endl;
+        cout << "in-----------" << endl;
+        // cout << Vertex.second.inEdges << endl;
+    }
 }
 
 #endif
