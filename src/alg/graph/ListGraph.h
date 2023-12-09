@@ -5,40 +5,36 @@
 #include <unordered_map>
 #include <iostream>
 using namespace std;
-
 template <typename V, typename E>
 class Edge;
-
 template <typename V, typename E>
 class Vertex;
 
+/********************************************************************
+ * \file   Vertex
+ * \brief  Vertex
+ *
+ * \author pirate
+ * \date   December 2023
+ *********************************************************************/
 template <typename V, typename E>
 class Vertex
 {
-    friend bool operator==(const Vertex &lv, const Vertex &rv)
-    {
-        cout << "call ==" << endl;
-        return lv.value == rv.value;
-    }
+    friend bool operator==(const Vertex& lv, const Vertex& rv);
     friend class std::hash<Vertex>;
-
+public:
+    Vertex(V v) :value(v)
+    {
+    }
 public:
     V value;
     unordered_set<Edge<V, E>> inEdges;
     unordered_set<Edge<V, E>> outEdges;
-
-public:
-    Vertex() {}
-    Vertex(V v)
-    {
-        this->value = v;
-    }
 };
 
 template <typename V, typename E>
 bool operator==(const Vertex<V, E> &lv, const Vertex<V, E> &rv)
 {
-    cout << "call ==" << endl;
     return lv.value == rv.value;
 }
 
@@ -53,7 +49,6 @@ namespace std
 
         size_t operator()(const Vertex<V, E> &v) const
         {
-            cout << "call vertex hash" << endl;
             return v.value == NULL ? 0 : hash<V>()(v.value);
         }
 
@@ -62,12 +57,17 @@ namespace std
     };
 } // close the std namespace; note: no semicolon after the close curly
 
+/********************************************************************
+ * \file   Vertex
+ * \brief  Vertex
+ *
+ * \author pirate
+ * \date   December 2023
+ *********************************************************************/
 template <typename V, typename E>
 class Edge
 {
-    friend bool operator==(const Edge &le, const Edge &re)
-    {
-        cout << "call Edge ==" << endl;
+    friend bool operator==(const Edge& le, const Edge& re) {
         return le.from->value == re.from->value && le.to->value == re.to->value;
     }
     friend class std::hash<Edge>;
@@ -92,13 +92,6 @@ public:
     }
 };
 
-template <typename V, typename E>
-bool operator==(const Edge<V, E> &lv, const Edge<V, E> &rv)
-{
-    cout << "call Edge ==" << endl;
-    return lv.from.value == rv.from.value && lv.to.value == rv.to.value;
-}
-
 namespace std
 {
     template <typename V, typename E> // we're defining a specialization with
@@ -119,11 +112,21 @@ namespace std
     };
 } // close the std namespace; note: no semicolon after the close curly
 
+
+/*****************************************************************//**
+ * \file   ListGraph.h
+ * \brief  graph 
+ *
+ * \author pirate
+ * \date   December 2023
+ *********************************************************************/
 template <typename V, typename E>
 class ListGraph : public IGraph<V, E>
 {
 private:
+    //保存顶点
     unordered_map<V, Vertex<V, E>> m_vertices;
+    //保存边
     unordered_set<Edge<V, E>> m_edges;
 public:
     void addVertex(V v);
@@ -132,6 +135,10 @@ public:
     void print();
 };
 
+/// @brief 增加顶点
+/// @tparam V 
+/// @tparam E 
+/// @param v 
 template <typename V, typename E>
 void ListGraph<V, E>::addVertex(V v)
 {
@@ -141,6 +148,11 @@ void ListGraph<V, E>::addVertex(V v)
     }
 }
 
+/// @brief 增加边
+/// @tparam V 
+/// @tparam E 
+/// @param from 
+/// @param to 
 template <typename V, typename E>
 void ListGraph<V, E>::addEdge(V from, V to)
 {
@@ -180,7 +192,7 @@ void ListGraph<V, E>::print()
     {
         cout << Vertex.first << endl;
         cout << "out-----------" << endl;
-        //cout << Vertex.second.outEdges << endl;
+        //cout << Vertex.second.outEdges.cout() << endl;
         cout << "in-----------" << endl;
         // cout << Vertex.second.inEdges << endl;
     }
