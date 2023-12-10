@@ -13,114 +13,18 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="源文件\net">
-      <UniqueIdentifier>{b287c3f3-0db3-42bd-a881-e70bd4cae5fc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="源文件\xop">
-      <UniqueIdentifier>{8ad8d7ce-cd57-4f94-bb38-91da1d1ad872}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="rtsp.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\rtsp\net\Acceptor.cpp">
-      <Filter>源文件\net</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\rtsp\net\BufferReader.cpp">
-      <Filter>源文件\net</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\rtsp\net\BufferWriter.cpp">
-      <Filter>源文件\net</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\rtsp\net\EpollTaskScheduler.cpp">
-      <Filter>源文件\net</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\rtsp\net\EventLoop.cpp">
-      <Filter>源文件\net</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\rtsp\net\Logger.cpp">
-      <Filter>源文件\net</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\rtsp\net\MemoryManager.cpp">
-      <Filter>源文件\net</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\rtsp\net\NetInterface.cpp">
-      <Filter>源文件\net</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\rtsp\net\Pipe.cpp">
-      <Filter>源文件\net</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\rtsp\net\SelectTaskScheduler.cpp">
-      <Filter>源文件\net</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\rtsp\net\SocketUtil.cpp">
-      <Filter>源文件\net</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\rtsp\net\TaskScheduler.cpp">
-      <Filter>源文件\net</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\rtsp\net\TcpConnection.cpp">
-      <Filter>源文件\net</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\rtsp\net\TcpServer.cpp">
-      <Filter>源文件\net</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\rtsp\net\TcpSocket.cpp">
-      <Filter>源文件\net</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\rtsp\net\Timer.cpp">
-      <Filter>源文件\net</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\rtsp\net\Timestamp.cpp">
-      <Filter>源文件\net</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\rtsp\xop\AACSource.cpp">
-      <Filter>源文件\xop</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\rtsp\xop\DigestAuthentication.cpp">
-      <Filter>源文件\xop</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\rtsp\xop\G711ASource.cpp">
-      <Filter>源文件\xop</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\rtsp\xop\H264Parser.cpp">
-      <Filter>源文件\xop</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\rtsp\xop\H264Source.cpp">
-      <Filter>源文件\xop</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\rtsp\xop\H265Source.cpp">
-      <Filter>源文件\xop</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\rtsp\xop\MediaSession.cpp">
-      <Filter>源文件\xop</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\rtsp\xop\RtpConnection.cpp">
-      <Filter>源文件\xop</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\rtsp\xop\RtspConnection.cpp">
-      <Filter>源文件\xop</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\rtsp\xop\RtspMessage.cpp">
-      <Filter>源文件\xop</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\rtsp\xop\RtspPusher.cpp">
-      <Filter>源文件\xop</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\rtsp\xop\RtspServer.cpp">
-      <Filter>源文件\xop</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\rtsp\xop\VP8Source.cpp">
-      <Filter>源文件\xop</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\rtsp\rtsp_h264_file.cpp">
+    <ClCompile Include="..\..\src\rtsp\CRtspServer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\rtsp\rtsp_pusher.cpp">
+    <ClCompile Include="..\..\src\rtsp\CRtspSessionManager.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\rtsp\rtsp_server.cpp">
+    <ClCompile Include="..\..\src\rtsp\RtspSvrApi.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

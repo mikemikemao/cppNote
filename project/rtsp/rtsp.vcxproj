@@ -131,39 +131,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\rtsp\net\Acceptor.cpp" />
-    <ClCompile Include="..\..\src\rtsp\net\BufferReader.cpp" />
-    <ClCompile Include="..\..\src\rtsp\net\BufferWriter.cpp" />
-    <ClCompile Include="..\..\src\rtsp\net\EpollTaskScheduler.cpp" />
-    <ClCompile Include="..\..\src\rtsp\net\EventLoop.cpp" />
-    <ClCompile Include="..\..\src\rtsp\net\Logger.cpp" />
-    <ClCompile Include="..\..\src\rtsp\net\MemoryManager.cpp" />
-    <ClCompile Include="..\..\src\rtsp\net\NetInterface.cpp" />
-    <ClCompile Include="..\..\src\rtsp\net\Pipe.cpp" />
-    <ClCompile Include="..\..\src\rtsp\net\SelectTaskScheduler.cpp" />
-    <ClCompile Include="..\..\src\rtsp\net\SocketUtil.cpp" />
-    <ClCompile Include="..\..\src\rtsp\net\TaskScheduler.cpp" />
-    <ClCompile Include="..\..\src\rtsp\net\TcpConnection.cpp" />
-    <ClCompile Include="..\..\src\rtsp\net\TcpServer.cpp" />
-    <ClCompile Include="..\..\src\rtsp\net\TcpSocket.cpp" />
-    <ClCompile Include="..\..\src\rtsp\net\Timer.cpp" />
-    <ClCompile Include="..\..\src\rtsp\net\Timestamp.cpp" />
-    <ClCompile Include="..\..\src\rtsp\rtsp_h264_file.cpp" />
-    <ClCompile Include="..\..\src\rtsp\rtsp_pusher.cpp" />
-    <ClCompile Include="..\..\src\rtsp\rtsp_server.cpp" />
-    <ClCompile Include="..\..\src\rtsp\xop\AACSource.cpp" />
-    <ClCompile Include="..\..\src\rtsp\xop\DigestAuthentication.cpp" />
-    <ClCompile Include="..\..\src\rtsp\xop\G711ASource.cpp" />
-    <ClCompile Include="..\..\src\rtsp\xop\H264Parser.cpp" />
-    <ClCompile Include="..\..\src\rtsp\xop\H264Source.cpp" />
-    <ClCompile Include="..\..\src\rtsp\xop\H265Source.cpp" />
-    <ClCompile Include="..\..\src\rtsp\xop\MediaSession.cpp" />
-    <ClCompile Include="..\..\src\rtsp\xop\RtpConnection.cpp" />
-    <ClCompile Include="..\..\src\rtsp\xop\RtspConnection.cpp" />
-    <ClCompile Include="..\..\src\rtsp\xop\RtspMessage.cpp" />
-    <ClCompile Include="..\..\src\rtsp\xop\RtspPusher.cpp" />
-    <ClCompile Include="..\..\src\rtsp\xop\RtspServer.cpp" />
-    <ClCompile Include="..\..\src\rtsp\xop\VP8Source.cpp" />
+    <ClCompile Include="..\..\src\rtsp\CRtspServer.cpp" />
+    <ClCompile Include="..\..\src\rtsp\CRtspSessionManager.cpp" />
+    <ClCompile Include="..\..\src\rtsp\RtspSvrApi.cpp" />
     <ClCompile Include="rtsp.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

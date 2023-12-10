@@ -2,14 +2,16 @@
 //
 
 #include <iostream>
+#include "RtspSvrApi.h"
 
-int rtsp_h264_file_main(int argc, char** argv);
-int rtsp_pusher_main(int argc, char** argv);
-int rtsp_server_main(int argc, char** argv);
+//int rtsp_h264_file_main(int argc, char** argv);
+//int rtsp_pusher_main(int argc, char** argv);
+//int rtsp_server_main(int argc, char** argv);
 
 int main(int argc, char** argv)
 {
-	rtsp_h264_file_main(argc,argv);
+	RtspSvrApi rtspSvrApi;
+	rtspSvrApi.init_rtsp_server();
 	return 0;
 }
 
