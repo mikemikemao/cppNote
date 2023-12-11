@@ -5,7 +5,6 @@
 class RtspSvrApi
 {
 public:
-	static constexpr int RTSP_PORT = 554;
 	RtspSvrApi();
 	void init_rtsp_server();
 private:
