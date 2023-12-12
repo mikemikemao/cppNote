@@ -1,0 +1,3 @@
+rootProject.name = "cmakeDemo"
+include ':app'
+include ':rtspc'
