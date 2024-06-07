@@ -191,7 +191,7 @@ const string &LogContext::str() {
     if (_got_content) {
         return _content;
     }
-    _content = ostringstream::str();
+    _content = ostringstream::str();//返回的是临时对象，不能对其直接操作
     _got_content = true;
     return _content;
 }

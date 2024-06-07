@@ -118,6 +118,10 @@ private:
 /**
 * 日志上下文
 */
+/**
+ * 构造日志上下文
+ * 日志上下文转为str
+ */
 class LogContext : public std::ostringstream {
 public:
     //_file,_function改成string保存，目的是有些情况下，指针可能会失效
