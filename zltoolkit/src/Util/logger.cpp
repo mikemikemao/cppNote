@@ -78,11 +78,12 @@ INSTANCE_IMP(Logger, exeName())
 Logger::Logger(const string &loggerName) {
     _logger_name = loggerName;
     _last_log = std::make_shared<LogContext>();
+    //默认的日志输出为ConsoleChannel
     _default_channel = std::make_shared<ConsoleChannel>("default", LTrace);
 }
 
 Logger::~Logger() {
-    _writer.reset();
+    _writer.reset();//与新的一个共享指针交换，引用计数为0
     {
         LogContextCapture(*this, LInfo, __FILE__, __FUNCTION__, __LINE__);
     }
