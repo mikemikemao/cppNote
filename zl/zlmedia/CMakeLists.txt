@@ -13,7 +13,20 @@ set(CMAKE_CXX_STANDARD 11)
 option(ENABLE_SERVER "Enable Server" ON)
 option(ENABLE_SERVER_LIB "Enable server as android static library" OFF)
 
+function(update_cached name value)
+  set("${name}" "${value}" CACHE INTERNAL "*** Internal ***" FORCE)
+endfunction()
+
+function(update_cached_list name)
+  set(_tmp_list "${${name}}")
+  list(APPEND _tmp_list "${ARGN}")
+  list(REMOVE_DUPLICATES _tmp_list)
+  update_cached(${name} "${_tmp_list}")
+endfunction()
+
+add_subdirectory(3rdpart)
 
 if(ENABLE_SERVER)
   add_subdirectory(server)
 endif()
+

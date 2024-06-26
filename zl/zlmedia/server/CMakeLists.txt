@@ -21,6 +21,7 @@
 # SOFTWARE.
 #
 
+message(STATUS "compile MediaServer")
 file(GLOB MediaServer_SRC_LIST ./*.cpp ./*.h)
 message(STATUS "COMPILE_DEFINITIONS:${MK_COMPILE_DEFINITIONS}")
 set(COMPILE_DEFINITIONS ${MK_COMPILE_DEFINITIONS})
