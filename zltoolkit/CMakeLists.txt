@@ -85,8 +85,14 @@ endif()
 
 if(WIN32)
     set(LINK_LIB_LIST WS2_32 Iphlpapi shlwapi)
-else()
-    set(LINK_LIB_LIST)
+elseif(ANDROID)
+    # 检查是否存在liblog库
+    find_library(LOG_LIBRARY log)
+    # 如果找到liblog库，则将其链接到你的应用程序
+    if(LOG_LIBRARY)
+        message(STATUS "find liblog")
+        list(APPEND  LINK_LIB_LIST ${LOG_LIBRARY})
+    endif()
 endif()
 
 
@@ -136,13 +142,14 @@ endif()
 
 #编译动态库
 #Compile dynamic library
-if(NOT IOS AND NOT ANDROID AND NOT WIN32)
+if(NOT IOS AND NOT WIN32)
     add_library(${PROJECT_NAME}_shared SHARED ${SRC_LIST})
     target_include_directories(${PROJECT_NAME}_shared PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_link_libraries(${PROJECT_NAME}_shared ${LINK_LIB_LIST})
     set_target_properties(${PROJECT_NAME}_shared PROPERTIES OUTPUT_NAME "${PROJECT_NAME}")
     install(TARGETS ${PROJECT_NAME}_shared  ARCHIVE DESTINATION ${INSTALL_PATH_LIB} LIBRARY DESTINATION ${INSTALL_PATH_LIB})
 endif()
+
 
 #编译静态库
 #Compile static library
